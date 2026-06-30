@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IEL Writing Practice</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-light: #eff6ff;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --yellow: #ca8a04;
+      --yellow-light: #fefce8;
+      --red: #dc2626;
+      --red-light: #fef2f2;
+      --purple: #7c3aed;
+      --purple-light: #f5f3ff;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --radius: 12px;
+      --shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #e0e7ff 0%, #f0f9ff 50%, #ecfdf5 100%);
+      min-height: 100vh;
+      color: var(--gray-800);
+      line-height: 1.6;
+    }
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* TOP BAR */
+    #top-bar {
+      display: none;
+      background: white;
+      border-bottom: 1px solid var(--gray-200);
+      padding: 12px 24px;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .top-bar-brand { font-weight: 700; color: var(--primary); font-size: 1.05rem; }
+    .top-bar-info { font-size: 0.85rem; color: var(--gray-600); }
+
+    /* LAYOUT */
+    .container { max-width: 760px; margin: 0 auto; padding: 32px 20px 60px; }
+    .card { background: white; border-radius: var(--radius); box-shadow: var(--shadow); padding: 36px; }
+
+    /* WELCOME */
+    .welcome-header { text-align: center; margin-bottom: 32px; }
+    .welcome-emoji { font-size: 3rem; margin-bottom: 8px; }
+    .welcome-header h1 { font-size: 2rem; font-weight: 800; color: var(--primary); line-height: 1.2; }
+    .welcome-header p { color: var(--gray-600); margin-top: 10px; font-size: 1rem; }
+    .level-badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 18px 0 28px; }
+    .level-badge {
+      background: var(--primary-light); color: var(--primary);
+      border: 1.5px solid #bfdbfe; border-radius: 999px;
+      padding: 4px 14px; font-size: 0.8rem; font-weight: 600;
+    }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--gray-700); font-size: 0.95rem; }
+    .form-group input, .form-group select {
+      width: 100%; padding: 12px 16px;
+      border: 2px solid var(--gray-200); border-radius: 8px;
+      font-size: 1rem; color: var(--gray-800);
+      transition: border-color .2s; background: white;
+    }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); }
+    .btn {
+      width: 100%; padding: 14px; border: none; border-radius: 8px;
+      font-size: 1rem; font-weight: 700; cursor: pointer; transition: all .2s;
+    }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    .btn-primary:disabled { background: var(--gray-400); cursor: not-allowed; transform: none; }
+    .btn-secondary { background: var(--gray-100); color: var(--gray-700); margin-top: 10px; }
+    .btn-secondary:hover { background: var(--gray-200); }
+    .teacher-link {
+      text-align: center; margin-top: 20px;
+      font-size: 0.8rem; color: var(--gray-400);
+    }
+    .teacher-link a { color: var(--gray-400); text-decoration: none; cursor: pointer; }
+    .teacher-link a:hover { color: var(--gray-600); text-decoration: underline; }
+
+    /* ACTIVITY SELECTION */
+    .section-title { font-size: 1.4rem; font-weight: 800; color: var(--gray-800); margin-bottom: 6px; }
+    .section-subtitle { color: var(--gray-600); margin-bottom: 24px; font-size: 0.95rem; }
+    .activity-grid { display: grid; gap: 14px; }
+    .activity-card {
+      border: 2px solid var(--gray-200); border-radius: 10px;
+      padding: 18px 20px; cursor: pointer; transition: all .2s; background: white;
+    }
+    .activity-card:hover {
+      border-color: var(--primary); background: var(--primary-light);
+      transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37,99,235,0.12);
+    }
+    .activity-card-title { font-weight: 700; color: var(--gray-800); margin-bottom: 4px; }
+    .activity-card-desc { font-size: 0.88rem; color: var(--gray-600); }
+
+    /* ACTIVITY SCREEN */
+    .activity-tag {
+      display: inline-block; background: var(--primary-light); color: var(--primary);
+      border-radius: 999px; padding: 3px 12px; font-size: 0.78rem; font-weight: 700;
+      margin-bottom: 10px; letter-spacing: 0.03em;
+    }
+    .activity-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 14px; }
+    .instructions-box {
+      background: var(--gray-50); border-left: 4px solid var(--primary);
+      border-radius: 0 8px 8px 0; padding: 16px 18px; margin-bottom: 20px;
+    }
+    .instructions-box h3 {
+      font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.05em; color: var(--primary); margin-bottom: 8px;
+    }
+    .instructions-box p, .instructions-box li { font-size: 0.93rem; color: var(--gray-700); margin-bottom: 4px; }
+    .instructions-box ul { padding-left: 18px; }
+    .model-text-box {
+      background: #faf5ff; border: 1px solid #e9d5ff; border-radius: 8px;
+      padding: 16px 18px; margin-bottom: 20px; font-size: 0.9rem;
+      color: var(--gray-700); line-height: 1.7;
+    }
+    .model-text-label {
+      font-style: normal; font-weight: 700; font-size: 0.8rem;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--purple); margin-bottom: 8px; display: block;
+    }
+    .source-text-box {
+      background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px;
+      padding: 16px 18px; margin-bottom: 20px; font-size: 0.9rem;
+      color: var(--gray-700); line-height: 1.9; white-space: pre-wrap;
+    }
+    .source-text-label {
+      font-weight: 700; font-size: 0.8rem; text-transform: uppercase;
+      letter-spacing: 0.05em; color: var(--yellow); margin-bottom: 8px; display: block;
+      white-space: normal;
+    }
+
+    /* SENTENCE FRAMES */
+    .sentence-frames { margin-bottom: 20px; }
+    .sentence-frame-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
+    .sentence-frame-label { font-size: 0.9rem; color: var(--gray-700); flex: 0 0 auto; padding-top: 10px; font-weight: 500; max-width: 240px; }
+    .sentence-frame-input { flex: 1; padding: 8px 12px; border: 1.5px solid var(--gray-200); border-radius: 6px; font-size: 0.9rem; color: var(--gray-800); }
+    .sentence-frame-input:focus { outline: none; border-color: var(--primary); }
+    .sentence-frame-hint { font-size: 0.75rem; color: var(--gray-400); flex: 0 0 80px; padding-top: 12px; }
+
+    .writing-area {
+      width: 100%; min-height: 200px; padding: 14px;
+      border: 2px solid var(--gray-200); border-radius: 8px;
+      font-size: 0.95rem; color: var(--gray-800); font-family: inherit;
+      resize: vertical; line-height: 1.6; transition: border-color .2s;
+    }
+    .writing-area:focus { outline: none; border-color: var(--primary); }
+    .word-count { text-align: right; font-size: 0.8rem; color: var(--gray-400); margin-top: 6px; margin-bottom: 16px; }
+
+    /* LOADING */
+    .loading-box { text-align: center; padding: 40px 20px; }
+    .spinner {
+      width: 44px; height: 44px; border: 4px solid var(--gray-200);
+      border-top-color: var(--primary); border-radius: 50%;
+      animation: spin 0.9s linear infinite; margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { color: var(--gray-600); font-size: 0.95rem; }
+
+    /* FEEDBACK */
+    .feedback-header { text-align: center; margin-bottom: 28px; }
+    .feedback-header h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 8px; }
+    .cefr-badge { display: inline-block; background: var(--primary); color: white; border-radius: 999px; padding: 4px 16px; font-size: 0.85rem; font-weight: 700; }
+    .save-status { font-size: 0.78rem; color: var(--gray-400); margin-top: 8px; }
+    .feedback-section { margin-bottom: 16px; }
+    .feedback-section-header { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 8px 8px 0 0; font-weight: 700; font-size: 0.9rem; }
+    .feedback-section-body { border-radius: 0 0 8px 8px; padding: 14px 16px; }
+    .feedback-section-body ul { padding-left: 18px; }
+    .feedback-section-body li { margin-bottom: 6px; font-size: 0.92rem; }
+    .section-strengths .feedback-section-header { background: var(--green-light); color: var(--green); }
+    .section-strengths .feedback-section-body { background: #f8fdf9; border: 1px solid #bbf7d0; border-top: none; }
+    .section-atlevel .feedback-section-header { background: var(--primary-light); color: var(--primary); }
+    .section-atlevel .feedback-section-body { background: #f8faff; border: 1px solid #bfdbfe; border-top: none; }
+    .section-needs .feedback-section-header { background: var(--yellow-light); color: var(--yellow); }
+    .section-needs .feedback-section-body { background: #fefff0; border: 1px solid #fde68a; border-top: none; }
+    .section-urgent .feedback-section-header { background: var(--red-light); color: var(--red); }
+    .section-urgent .feedback-section-body { background: #fff8f8; border: 1px solid #fca5a5; border-top: none; }
+    .section-practice .feedback-section-header { background: var(--purple-light); color: var(--purple); }
+    .section-practice .feedback-section-body { background: #fdf8ff; border: 1px solid #e9d5ff; border-top: none; }
+    .practice-title { font-weight: 700; margin-bottom: 8px; color: var(--gray-800); }
+    .practice-body { font-size: 0.92rem; color: var(--gray-700); white-space: pre-line; line-height: 1.7; }
+    .empty-section { color: var(--gray-400); font-style: italic; font-size: 0.9rem; }
+    .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 24px; }
+
+    /* TEACHER SCREEN */
+    .teacher-header { margin-bottom: 28px; }
+    .teacher-header h2 { font-size: 1.5rem; font-weight: 800; color: var(--gray-800); margin-bottom: 4px; }
+    .teacher-header p { color: var(--gray-500); font-size: 0.9rem; }
+    .teacher-filters { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .filter-select { padding: 8px 12px; border: 1.5px solid var(--gray-200); border-radius: 6px; font-size: 0.88rem; color: var(--gray-700); background: white; }
+    .teacher-table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    th { background: var(--gray-50); color: var(--gray-600); font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.04em; padding: 10px 12px; text-align: left; border-bottom: 2px solid var(--gray-200); white-space: nowrap; }
+    td { padding: 10px 12px; border-bottom: 1px solid var(--gray-100); vertical-align: top; }
+    tr:hover td { background: var(--gray-50); }
+    .td-name { font-weight: 600; color: var(--gray-800); }
+    .td-course { display: inline-block; background: var(--primary-light); color: var(--primary); border-radius: 999px; padding: 2px 10px; font-size: 0.75rem; font-weight: 700; }
+    .td-text { max-width: 220px; }
+    .text-clamp { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; color: var(--gray-600); cursor: pointer; }
+    .text-clamp.expanded { -webkit-line-clamp: unset; display: block; }
+    .expand-btn { font-size: 0.75rem; color: var(--primary); cursor: pointer; margin-top: 2px; }
+    .feedback-pill { display: inline-block; border-radius: 4px; padding: 2px 7px; font-size: 0.72rem; font-weight: 600; margin: 2px 2px 2px 0; }
+    .pill-green { background: var(--green-light); color: var(--green); }
+    .pill-yellow { background: var(--yellow-light); color: var(--yellow); }
+    .pill-red { background: var(--red-light); color: var(--red); }
+    .no-sessions { text-align: center; padding: 40px; color: var(--gray-400); font-style: italic; }
+    .teacher-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px,1fr)); gap: 12px; margin-bottom: 24px; }
+    .stat-box { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 8px; padding: 14px; text-align: center; }
+    .stat-number { font-size: 1.8rem; font-weight: 800; color: var(--primary); }
+    .stat-label { font-size: 0.75rem; color: var(--gray-500); margin-top: 2px; }
+    .btn-sm { padding: 8px 14px; font-size: 0.85rem; width: auto; }
+
+    @media (max-width: 520px) {
+      .card { padding: 22px 16px; }
+      .sentence-frame-row { flex-direction: column; }
+      .sentence-frame-hint { display: none; }
+      .btn-row { grid-template-columns: 1fr; }
+      .teacher-filters { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="top-bar">
+  <span class="top-bar-brand">✍️ IEL Writing Practice</span>
+  <span class="top-bar-info" id="top-bar-info"></span>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 1 · WELCOME
+═══════════════════════════════════════ -->
+<div id="screen-welcome" class="screen active">
+  <div class="container">
+    <div class="card">
+      <div class="welcome-header">
+        <img src="logo.jpg" alt="UAH Logo" style="height:70px;margin-bottom:12px" />
+        <h1>IEL Skills Sessions 2026</h1>
+        <p>Practice your writing and get personalised CEFR feedback from an AI writing coach.</p>
+      </div>
+      <div class="level-badges">
+        <span class="level-badge">IEL 1 · A2+</span>
+        <span class="level-badge">IEL 3 · B2</span>
+        <span class="level-badge">IEL 5 · B2+</span>
+        <span class="level-badge">IEL 7 · C1</span>
+      </div>
+      <div class="form-group">
+        <label for="input-name">Your full name</label>
+        <input type="text" id="input-name" placeholder="e.g. María González" autocomplete="off" />
+      </div>
+      <div class="form-group">
+        <label for="input-course">Your IEL course</label>
+        <select id="input-course">
+          <option value="">— Select your course —</option>
+          <option value="IEL1">IEL 1 (A2+)</option>
+          <option value="IEL3">IEL 3 (B2)</option>
+          <option value="IEL5">IEL 5 (B2+)</option>
+          <option value="IEL7">IEL 7 (C1)</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="startApp()">Start →</button>
+      <div class="teacher-link"><a onclick="showTeacherLogin()">Teacher access</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 2 · ACTIVITY SELECTION
+═══════════════════════════════════════ -->
+<div id="screen-select" class="screen">
+  <div class="container">
+    <div class="card">
+      <p class="section-title" id="select-greeting"></p>
+      <p class="section-subtitle" id="select-subtitle"></p>
+      <div class="activity-grid" id="activity-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 3 · ACTIVITY
+═══════════════════════════════════════ -->
+<div id="screen-activity" class="screen">
+  <div class="container">
+    <div class="card">
+      <span class="activity-tag" id="act-tag"></span>
+      <div class="activity-title" id="act-title"></div>
+      <div id="act-instructions" class="instructions-box"></div>
+      <div id="act-model" class="model-text-box" style="display:none"></div>
+      <div id="act-source" class="source-text-box" style="display:none"></div>
+      <div id="act-frames" class="sentence-frames" style="display:none"></div>
+      <div id="act-textarea-wrap" style="display:none">
+        <textarea class="writing-area" id="act-textarea" rows="10"
+          placeholder="Write your response here…" oninput="updateWordCount()"></textarea>
+        <div class="word-count" id="word-count">0 words</div>
+      </div>
+      <div id="loading-box" class="loading-box" style="display:none">
+        <div class="spinner"></div>
+        <p class="loading-text">Analysing your writing…<br>This may take a few seconds.</p>
+      </div>
+      <button class="btn btn-primary" id="btn-submit" onclick="submitWriting()">Get Feedback →</button>
+      <button class="btn btn-secondary" onclick="showScreen('screen-select')">← Back to activities</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 4 · FEEDBACK
+═══════════════════════════════════════ -->
+<div id="screen-feedback" class="screen">
+  <div class="container">
+    <div class="card">
+      <div class="feedback-header">
+        <h2>Your Writing Feedback</h2>
+        <span class="cefr-badge" id="fb-level-badge"></span>
+        <div class="save-status" id="save-status"></div>
+      </div>
+
+      <div class="feedback-section section-strengths">
+        <div class="feedback-section-header">✅ What you did well</div>
+        <div class="feedback-section-body"><ul id="fb-strengths"></ul></div>
+      </div>
+      <div class="feedback-section section-atlevel">
+        <div class="feedback-section-header">📍 Right at your level</div>
+        <div class="feedback-section-body"><ul id="fb-atlevel"></ul></div>
+      </div>
+      <div class="feedback-section section-needs">
+        <div class="feedback-section-header">⚠️ Needs some work</div>
+        <div class="feedback-section-body"><ul id="fb-needs"></ul></div>
+      </div>
+      <div class="feedback-section section-urgent" id="fb-urgent-section">
+        <div class="feedback-section-header">🚨 Urgent — significantly below level</div>
+        <div class="feedback-section-body"><ul id="fb-urgent"></ul></div>
+      </div>
+      <div class="feedback-section section-practice">
+        <div class="feedback-section-header">🎯 Practice activity for your weakest area</div>
+        <div class="feedback-section-body">
+          <div class="practice-title" id="fb-practice-title"></div>
+          <div class="practice-body" id="fb-practice-body"></div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="showScreen('screen-select')">Try another activity</button>
+        <button class="btn btn-primary" onclick="tryAgain()">Revise & resubmit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 5 · TEACHER LOGIN
+═══════════════════════════════════════ -->
+<div id="screen-teacher-login" class="screen">
+  <div class="container">
+    <div class="card">
+      <div class="welcome-header">
+        <div class="welcome-emoji">🔐</div>
+        <h1 style="font-size:1.5rem">Teacher Access</h1>
+        <p>Enter the teacher password to view all student sessions.</p>
+      </div>
+      <div class="form-group">
+        <label for="teacher-pwd">Password</label>
+        <input type="password" id="teacher-pwd" placeholder="Enter password" onkeydown="if(event.key==='Enter') teacherLogin()" />
+      </div>
+      <button class="btn btn-primary" onclick="teacherLogin()">Access Dashboard →</button>
+      <button class="btn btn-secondary" onclick="showScreen('screen-welcome')">← Back</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 6 · TEACHER DASHBOARD
+═══════════════════════════════════════ -->
+<div id="screen-teacher" class="screen">
+  <div class="container">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:24px">
+        <div class="teacher-header" style="margin:0">
+          <h2>Teacher Dashboard</h2>
+          <p>All student writing sessions</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-secondary btn-sm" onclick="loadTeacherData()">↻ Refresh</button>
+          <button class="btn btn-secondary btn-sm" onclick="showScreen('screen-welcome')">← Exit</button>
+        </div>
+      </div>
+
+      <div class="teacher-stats" id="teacher-stats"></div>
+
+      <div class="teacher-filters">
+        <select class="filter-select" id="filter-course" onchange="renderTable()">
+          <option value="">All courses</option>
+          <option value="IEL1">IEL 1</option>
+          <option value="IEL3">IEL 3</option>
+          <option value="IEL5">IEL 5</option>
+          <option value="IEL7">IEL 7</option>
+        </select>
+        <select class="filter-select" id="filter-urgent" onchange="renderTable()">
+          <option value="">All sessions</option>
+          <option value="urgent">With urgent items only</option>
+        </select>
+        <input class="filter-select" type="text" id="filter-name" placeholder="Search by name…" oninput="renderTable()" style="flex:1;min-width:150px" />
+      </div>
+
+      <div id="teacher-loading" class="loading-box" style="display:none">
+        <div class="spinner"></div>
+        <p class="loading-text">Loading sessions…</p>
+      </div>
+
+      <div class="teacher-table-wrap" id="table-wrap" style="display:none">
+        <table>
+          <thead>
+            <tr>
+              <th>Date / Time</th>
+              <th>Student</th>
+              <th>Course</th>
+              <th>Activity</th>
+              <th>Writing</th>
+              <th>Feedback summary</th>
+            </tr>
+          </thead>
+          <tbody id="teacher-tbody"></tbody>
+        </table>
+        <div id="no-sessions" class="no-sessions" style="display:none">No sessions found.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════
+// CONFIG — replace these values
+// ════════════════════════════════════════════
+const CONFIG = {
+  ANTHROPIC_API_KEY: '',
+  APPS_SCRIPT_URL:   'https://script.google.com/macros/s/AKfycbwfoS1VpqiZd6v7s24osCrCoRwYNnLPNKQs2N0i63VlqVt-gcAipHlsbJVXUvujRsev1w/exec',
+  TEACHER_PASSWORD:  'sessions2026',
+};
+
+// ════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════
+let state = {
+  name: '', course: '', cefrLevel: '',
+  currentActivity: null,
+  allSessions: [],
+};
+
+// ════════════════════════════════════════════
+// ACTIVITIES
+// ════════════════════════════════════════════
+const ACTIVITIES = {
+  IEL1: [
+    {
+      id: 'IEL1-W1', title: 'Finish the Sentences',
+      shortDesc: 'Complete 7 sentence starters using the correct tense.',
+      type: 'frames',
+      instructions: `Complete each sentence with a coherent idea. Each answer must include <strong>at least 5 words</strong>. Use the tense shown in brackets.`,
+      frames: [
+        { starter: '1. University sometimes is', tense: 'present' },
+        { starter: '2. The last time I saw her', tense: 'past simple / past continuous' },
+        { starter: '3. There are a number of', tense: 'noun / present' },
+        { starter: '4. At that time in Chile,', tense: 'past simple' },
+        { starter: '5. Identity is not only', tense: 'present simple' },
+        { starter: '6. For him, language and culture', tense: 'present or past simple' },
+        { starter: '7. At the moment she is', tense: 'present continuous' },
+      ],
+    },
+    {
+      id: 'IEL1-W2', title: '"Snapshot of Me" — Quick Write',
+      shortDesc: 'Write 5 sentences about yourself using simple present.',
+      type: 'frames',
+      instructions: `Complete each sentence with your own information. Write <strong>at least 4 words</strong> for each answer. Use <strong>simple present</strong> tense.`,
+      frames: [
+        { starter: 'My name is', tense: '' },
+        { starter: 'and I am from', tense: '' },
+        { starter: 'I speak _______ and I am learning', tense: '' },
+        { starter: 'In my free time, I like', tense: '' },
+        { starter: 'One important right for me is _______ because', tense: '' },
+      ],
+    },
+    {
+      id: 'IEL1-W3', title: '"A Right That Matters to Me"',
+      shortDesc: 'Write 4 sentences about a human right using sentence frames.',
+      type: 'frames',
+      instructions: `Choose <strong>one right</strong> from the list and complete the four sentence frames.<br><br>
+        <strong>Rights:</strong> the right to education · the right to be safe · the right to a family · the right to play · the right to say your opinion<br><br>
+        Write <strong>at least 4 words</strong> per sentence. Check capital letters and full stops.`,
+      frames: [
+        { starter: 'I think the right to _______ is very important.', tense: '' },
+        { starter: 'This right helps people because', tense: '' },
+        { starter: 'For example,', tense: '' },
+        { starter: "If people don't have this right,", tense: '' },
+      ],
+    },
+    {
+      id: 'IEL1-W4', title: 'Penpal Email',
+      shortDesc: 'Write an 80-word email to a friend about this semester.',
+      type: 'textarea',
+      instructions: `Write an <strong>80-word email</strong> to a friend telling them about this semester. Use <strong>email structure</strong> (salutation, introduction, main body, signing off).<br><br>Include:
+        <ul>
+          <li>An introduction of yourself</li>
+          <li>The career you are studying</li>
+          <li>Your favourite subject</li>
+          <li>Your least favourite subject</li>
+          <li>Activities you do with a certain frequency</li>
+        </ul>
+        Use <strong>FANBOYS connectors</strong>, the tenses studied in class, and prepositions of time and place.`,
+    },
+  ],
+  IEL3: [
+    {
+      id: 'IEL3-W1', title: 'Spot the Mistake',
+      shortDesc: 'Find and correct errors in capitalization, tenses, spelling, and pronouns.',
+      type: 'textarea',
+      instructions: `Read the text below and <strong>rewrite it correcting all mistakes</strong>. There are errors in: <strong>capitalization, tenses, spelling, and pronouns</strong>.`,
+      sourceText: `in many latin american countries, languaje can reflects and reinforce gender inequalitty. For exemple, proffesions like "doctor" or "engineer" is often used only in the masculine form, even when many women working in these jobs. This makes woman's achievments less visibel in everyday speech. also, some common expressions describes women through his appearance or relationships, while men was described through their actions or inteligence. Because of this, several government and universities now promotes inclusive languaje, encouraging people to use terms like "la médica" instead of assuming "el médico" includes everyone. however, this change is not allways easy. Many people thinks inclusive languaje is unnecesary or too complicated. Despite the debate, more young people in the region starting to question traditional languaje and it's effect on gender roles. Languaje, after all, can shaped how society see men and women.`,
+    },
+    {
+      id: 'IEL3-W2', title: 'The Site Manager — Story Writing',
+      shortDesc: 'Write a ~150-word story using a 5-part narrative structure.',
+      type: 'textarea',
+      instructions: `Choose ONE scenario and write a <strong>~150-word story</strong> using the 5-part structure:<br>
+        <em>At first… / As time went on… / Suddenly… / After that… / In the end…</em><br><br>
+        <strong>Scenarios:</strong>
+        <ul>
+          <li>A girl who wants to play on the boys' football team</li>
+          <li>A father who wants to take parental leave but feels judged</li>
+          <li>A young man studying nursing, the only male in his class</li>
+          <li>A woman running for a leadership position in student government</li>
+        </ul>`,
+      modelText: `<span class="model-text-label">📖 Model Story — "The Site Manager"</span>
+        <strong>Introduction:</strong> Camila was the new site manager at a construction company. She had studied civil engineering for five years, but on her first day, none of the workers looked happy to see her.<br><br>
+        <strong>Rising action:</strong> Every morning, the men questioned her decisions. "Are you sure?" they asked, even about simple things. Camila started writing extra notes to explain every choice, just to be taken seriously. Slowly, the tension grew.<br><br>
+        <strong>Climax:</strong> One afternoon, a storm hit the site. Water began to leak into the foundation, and the workers panicked. Camila quickly calculated the pressure and gave clear instructions. No one argued — there was no time.<br><br>
+        <strong>Falling action:</strong> Her solution worked. The structure held, and no one was hurt. That evening, one of the older workers, Don Raúl, said quietly, "You knew exactly what to do."<br><br>
+        <strong>Resolution:</strong> After that day, the team listened to her without hesitation. But Camila still wondered: why did it take an emergency for them to trust her skills?`,
+    },
+  ],
+  IEL5: [
+    {
+      id: 'IEL5-W1', title: 'Correct the Punctuation',
+      shortDesc: 'Rewrite an argumentative essay adding back all missing punctuation.',
+      type: 'textarea',
+      instructions: `All punctuation has been removed from the essay below (periods, commas, apostrophes, question marks, colons, etc.). <strong>Rewrite the full essay</strong> with correct punctuation. Pay attention to:
+        <ul>
+          <li>Sentence endings and capital letters</li>
+          <li>Commas with connectors (however, moreover, as a result…)</li>
+          <li>Apostrophes, colons, quotation marks</li>
+          <li>Paragraph breaks</li>
+        </ul>`,
+      sourceText: `Should Schools Embrace Alternative Pedagogies The Case of Waldorf Education
+
+For more than a hundred years most schools around the world have followed a similar model students sit at desks listen to lectures and take exams However not everyone agrees that this is the best way to learn Alternative pedagogies such as Montessori and Waldorf education offer a different approach to teaching children Waldorf education created by the Austrian philosopher Rudolf Steiner in 1919 is one of the most well known examples Although critics often question whether Waldorf schools provide enough academic preparation this essay argues that Waldorf education offers important benefits that make it a valuable alternative to traditional schooling
+
+The first reason to support Waldorf education is its focus on the whole child not just academic results Waldorf schools follow Steiners idea of educating the head heart and hands which means that art music gardening and craftwork are just as important as mathematics or reading For example students often learn to knit paint or play a musical instrument every week As a result children develop creativity and practical skills alongside academic knowledge This balanced approach can help students become more well rounded adults rather than simply good test takers
+
+A second important benefit is the way Waldorf education respects each child natural pace of development Formal academic subjects such as reading and writing are introduced later than in traditional schools usually around the age of seven Moreover the same teacher often stays with the same group of students for several years which creates a strong trusting relationship Because of this children may feel less pressure and anxiety about performing well at a young age In addition many Waldorf graduates report a genuine love of learning since they were never forced to compete or memorize information before they were ready
+
+Nevertheless critics raise valid concerns about this model Some argue that Waldorf education has no real scientific basis since it is connected to anthroposophy a spiritual philosophy developed by Steiner himself Furthermore opponents claim that delaying academic subjects could put students at a disadvantage when they later enter standardized education systems or take university entrance exams These are reasonable worries especially for parents who prioritize early academic achievement However several studies suggest that Waldorf students eventually catch up academically and often perform particularly well in creativity social skills and independent thinking Importantly families who choose this method usually do so voluntarily fully aware of its goals and values
+
+In conclusion while Waldorf education is not free from criticism its emphasis on creativity emotional development and respect for childhood should not be dismissed Traditional schools could even benefit from adopting some of its principles such as integrating more art and reducing early academic pressure For this reason alternative pedagogies like Waldorf deserve greater recognition and support not as a replacement for mainstream education but as a meaningful and proven alternative for families who seek a different path for their children`,
+    },
+    {
+      id: 'IEL5-W2', title: 'Pitch a Pedagogy',
+      shortDesc: 'Write a forum post about your experience with an alternative teaching approach.',
+      type: 'textarea',
+      instructions: `Imagine you already use an <strong>alternative pedagogy</strong> in your classroom. Write a <strong>forum post (8–10 sentences)</strong> for an online teacher community.<br><br>
+        <strong>Choose one:</strong> Montessori / Waldorf / Project-Based Learning / Flipped Classroom<br><br>
+        Your post must include:
+        <ul>
+          <li><strong>Opening:</strong> which approach you use and for how long</li>
+          <li><strong>A specific moment:</strong> one real-sounding classroom moment</li>
+          <li><strong>One honest challenge:</strong> something that is actually hard about it</li>
+          <li><strong>Concession + recommendation:</strong> "Although it can be challenging to ___, it's worth it because ___."</li>
+          <li><strong>Closing line</strong> inviting replies</li>
+        </ul>`,
+    },
+  ],
+  IEL7: [
+    {
+      id: 'IEL7-W1', title: 'Teaching Philosophy Statement',
+      shortDesc: 'Write an 8–10 sentence professional philosophy statement.',
+      type: 'textarea',
+      instructions: `Write your own <strong>teaching philosophy statement</strong> (8–10 sentences) — the kind teachers write for a professional portfolio or job application. Use the <strong>four-move structure</strong>:
+        <ul>
+          <li><strong>Belief:</strong> "I believe that teaching is/should be ___."</li>
+          <li><strong>Role:</strong> "My role as a teacher is to ___."</li>
+          <li><strong>Evidence:</strong> ONE real moment that shows this belief in action.</li>
+          <li><strong>Commitment:</strong> "Moving forward, I will continue to ___, because ___."</li>
+        </ul>`,
+      modelText: `<span class="model-text-label">📖 Model Statement</span>"I believe that teaching is fundamentally an act of trust-building before it is an act of transmitting content. My role as a teacher is to create a space where students feel safe enough to take risks with a new language. I remember a lesson where a usually silent student volunteered to answer only after weeks of low-stakes, ungraded speaking tasks — a small moment that confirmed for me that confidence, not correctness, is often the real barrier to language use. Moving forward, I will continue to prioritize psychological safety alongside accuracy, because a technically correct classroom that no one feels free to speak in has, in some sense, failed at its main purpose."`,
+    },
+    {
+      id: 'IEL7-W2', title: '"The Moment I Noticed" — Critical Reflection',
+      shortDesc: 'Write a reflective journal entry about a classroom assumption.',
+      type: 'textarea',
+      instructions: `Write a <strong>reflective journal entry (8–10 sentences)</strong> about a real (or plausible) classroom moment that carried an unspoken assumption about power or what is "normal."<br><br>
+        <strong>Key concepts:</strong>
+        <ul>
+          <li><strong>Discourse:</strong> language and assumptions shaping how we talk about something</li>
+          <li><strong>Hegemony:</strong> when one way of thinking becomes "natural" or "common sense"</li>
+          <li><strong>Naturalized assumption:</strong> an idea presented as obvious truth</li>
+        </ul>
+        <strong>Three-move structure:</strong>
+        <ol>
+          <li>The moment — describe it concretely (2–3 sentences)</li>
+          <li>Name the assumption — apply one key term, explain why</li>
+          <li>Look forward — what does this mean for your future teaching?</li>
+        </ol>
+        Useful phrases: <em>Looking back, I notice… / This reflects a kind of… / I find myself… / Now I want to…</em>`,
+      modelText: `<span class="model-text-label">📖 Model Entry</span>"During my practicum, I once heard a mentor teacher tell a quiet student, 'Speak up, good students participate.' At the time, I just nodded. Looking back, I notice a naturalized assumption: that participation always means speaking aloud, and that this is the only valid sign of a 'good' student. This reflects a kind of hegemony: one definition of 'engagement' had become so common-sense that no one in the room, including me, questioned it. Now I find myself more aware of how often discourse in classrooms equates loud participation with intelligence or effort, and I want to build space in my own future classroom for the kinds of participation that don't require speaking aloud; written reflection, small-group talk, or simply thinking time before answering."`,
+    },
+  ],
+};
+
+const CEFR = {
+  IEL1: { level: 'A2+', desc: 'Can write simple connected sentences about familiar topics. Uses basic vocabulary and high-frequency structures. May make frequent errors but meaning is generally clear.' },
+  IEL3: { level: 'B2',  desc: 'Can write clear, detailed text on a variety of topics. Uses a range of vocabulary and grammatical structures. Produces coherent text using appropriate connectors.' },
+  IEL5: { level: 'B2+', desc: 'Can write clear, well-structured text on complex topics. Uses wide vocabulary, complex grammar, and rhetorical devices. Approaches C1 in coherence and lexical precision.' },
+  IEL7: { level: 'C1',  desc: 'Can express ideas fluently with precision and nuance. Produces well-structured complex text. Language is idiomatic, natural, and stylistically appropriate.' },
+};
+
+// ════════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function startApp() {
+  const name = document.getElementById('input-name').value.trim();
+  const course = document.getElementById('input-course').value;
+  if (!name) return alert('Please enter your name.');
+  if (!course) return alert('Please select your IEL course.');
+  state.name = name;
+  state.course = course;
+  state.cefrLevel = CEFR[course].level;
+  document.getElementById('top-bar-info').textContent = `${name} · ${course} (${state.cefrLevel})`;
+  document.getElementById('top-bar').style.display = 'flex';
+  buildActivityList();
+  showScreen('screen-select');
+}
+
+function buildActivityList() {
+  const acts = ACTIVITIES[state.course];
+  document.getElementById('select-greeting').textContent = `Welcome, ${state.name}! 👋`;
+  document.getElementById('select-subtitle').textContent =
+    `${state.course} · ${CEFR[state.course].level} — Choose an activity to practise:`;
+  const list = document.getElementById('activity-list');
+  list.innerHTML = '';
+  acts.forEach(act => {
+    const card = document.createElement('div');
+    card.className = 'activity-card';
+    card.innerHTML = `<div class="activity-card-title">${act.title}</div>
+      <div class="activity-card-desc">${act.shortDesc}</div>`;
+    card.onclick = () => openActivity(act);
+    list.appendChild(card);
+  });
+}
+
+function openActivity(act) {
+  state.currentActivity = act;
+  document.getElementById('act-tag').textContent = `${state.course} · ${state.cefrLevel}`;
+  document.getElementById('act-title').textContent = act.title;
+  document.getElementById('act-instructions').innerHTML = `<h3>Instructions</h3><p>${act.instructions}</p>`;
+
+  const modelEl = document.getElementById('act-model');
+  if (act.modelText) { modelEl.innerHTML = act.modelText; modelEl.style.display = 'block'; }
+  else modelEl.style.display = 'none';
+
+  const sourceEl = document.getElementById('act-source');
+  if (act.sourceText) {
+    sourceEl.innerHTML = `<span class="source-text-label">📄 Text to correct</span>${act.sourceText}`;
+    sourceEl.style.display = 'block';
+  } else sourceEl.style.display = 'none';
+
+  const framesEl = document.getElementById('act-frames');
+  const textWrap = document.getElementById('act-textarea-wrap');
+  if (act.type === 'frames') {
+    framesEl.style.display = 'block';
+    textWrap.style.display = 'none';
+    framesEl.innerHTML = act.frames.map((f, i) =>
+      `<div class="sentence-frame-row">
+        <div class="sentence-frame-label">${f.starter}</div>
+        <input class="sentence-frame-input" id="frame-${i}" placeholder="your answer…" />
+        ${f.tense ? `<div class="sentence-frame-hint">[${f.tense}]</div>` : ''}
+      </div>`).join('');
+  } else {
+    framesEl.style.display = 'none';
+    textWrap.style.display = 'block';
+    document.getElementById('act-textarea').value = '';
+    updateWordCount();
+  }
+
+  document.getElementById('loading-box').style.display = 'none';
+  document.getElementById('btn-submit').style.display = 'block';
+  showScreen('screen-activity');
+}
+
+function updateWordCount() {
+  const text = document.getElementById('act-textarea').value.trim();
+  const count = text ? text.split(/\s+/).length : 0;
+  document.getElementById('word-count').textContent = `${count} word${count !== 1 ? 's' : ''}`;
+}
+
+function collectStudentText() {
+  const act = state.currentActivity;
+  if (act.type === 'frames') {
+    return act.frames.map((f, i) => {
+      const val = (document.getElementById(`frame-${i}`)?.value || '').trim();
+      return `${f.starter} ${val}${f.tense ? ` [${f.tense}]` : ''}`;
+    }).join('\n');
+  }
+  return document.getElementById('act-textarea').value.trim();
+}
+
+// ════════════════════════════════════════════
+// CLAUDE API CALL
+// ════════════════════════════════════════════
+async function submitWriting() {
+  const studentText = collectStudentText();
+  if (!studentText || studentText.replace(/\s/g, '').length < 20)
+    return alert('Please write your response before submitting.');
+
+  document.getElementById('btn-submit').style.display = 'none';
+  document.getElementById('loading-box').style.display = 'block';
+
+  const act = state.currentActivity;
+  const info = CEFR[state.course];
+
+  const systemPrompt = `You are an expert EFL writing coach specialising in CEFR assessment.
+You are evaluating the writing of ${state.name}, a student at ${state.course} level (${info.level}).
+CEFR ${info.level} descriptor: ${info.desc}
+
+Respond ONLY with valid JSON — no extra text, no markdown fences. Use this exact structure:
+{
+  "strengths": ["specific strength referencing their actual text", "another strength"],
+  "at_level": ["aspect that meets ${info.level} expectations"],
+  "needs_work": [{"area": "skill", "detail": "what and how to improve"}],
+  "urgent": [{"area": "skill", "detail": "why this is significantly below ${info.level}"}],
+  "practice_activity": {"title": "short title", "instructions": "3-5 step activity for their weakest area"}
+}
+Rules: strengths = 2-3 items (specific, quote their text); at_level = 1-2 items; needs_work = below level but not critical; urgent = only if significantly below ${info.level}, can be []; practice_activity targets weakest area, completable in 5-10 min, language appropriate for ${info.level}.`;
+
+  const userMsg = `Activity: ${act.title} (${state.course})
+Instructions given to student:
+${act.instructions.replace(/<[^>]+>/g, '')}
+${act.sourceText ? `\nOriginal text to correct:\n${act.sourceText}\n` : ''}
+Student's response:
+${studentText}`;
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1200,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userMsg }],
+      }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error?.message || `API error ${res.status}`);
+    }
+
+    const data = await res.json();
+    const raw = data.content[0].text.trim().replace(/^```json\s*/,'').replace(/\s*```$/,'').trim();
+    const feedback = JSON.parse(raw);
+    showFeedback(feedback, studentText);
+    saveToSheets(studentText, feedback);
+  } catch (e) {
+    document.getElementById('loading-box').style.display = 'none';
+    document.getElementById('btn-submit').style.display = 'block';
+    alert('Error getting feedback: ' + e.message);
+  }
+}
+
+// ════════════════════════════════════════════
+// RENDER FEEDBACK
+// ════════════════════════════════════════════
+function showFeedback(fb, studentText) {
+  document.getElementById('fb-level-badge').textContent = `${state.course} · CEFR ${state.cefrLevel}`;
+  renderList('fb-strengths', fb.strengths);
+  renderList('fb-atlevel', fb.at_level);
+
+  const needsList = document.getElementById('fb-needs');
+  needsList.innerHTML = fb.needs_work?.length
+    ? fb.needs_work.map(n => `<li><strong>${n.area}:</strong> ${n.detail}</li>`).join('')
+    : '<li class="empty-section">Nothing significant to flag here — well done!</li>';
+
+  const urgentSec = document.getElementById('fb-urgent-section');
+  const urgentList = document.getElementById('fb-urgent');
+  if (fb.urgent?.length) {
+    urgentList.innerHTML = fb.urgent.map(u => `<li><strong>${u.area}:</strong> ${u.detail}</li>`).join('');
+    urgentSec.style.display = 'block';
+  } else urgentSec.style.display = 'none';
+
+  document.getElementById('fb-practice-title').textContent = fb.practice_activity.title;
+  document.getElementById('fb-practice-body').textContent = fb.practice_activity.instructions;
+  document.getElementById('save-status').textContent = '';
+  showScreen('screen-feedback');
+}
+
+function renderList(id, items) {
+  const el = document.getElementById(id);
+  el.innerHTML = items?.length
+    ? items.map(i => `<li>${i}</li>`).join('')
+    : '<li class="empty-section">—</li>';
+}
+
+function tryAgain() { openActivity(state.currentActivity); }
+
+// ════════════════════════════════════════════
+// SAVE TO GOOGLE SHEETS
+// ════════════════════════════════════════════
+function saveToSheets(studentText, feedback) {
+  if (!CONFIG.APPS_SCRIPT_URL || CONFIG.APPS_SCRIPT_URL.includes('REPLACE')) return;
+
+  const payload = {
+    timestamp:    new Date().toISOString(),
+    name:         state.name,
+    course:       state.course,
+    cefr:         state.cefrLevel,
+    activityId:   state.currentActivity.id,
+    activityName: state.currentActivity.title,
+    studentText:  studentText,
+    strengths:    (feedback.strengths || []).join(' | '),
+    atLevel:      (feedback.at_level || []).join(' | '),
+    needsWork:    (feedback.needs_work || []).map(n => `${n.area}: ${n.detail}`).join(' | '),
+    urgent:       (feedback.urgent || []).map(u => `${u.area}: ${u.detail}`).join(' | '),
+    practiceTitle:feedback.practice_activity?.title || '',
+    practiceBody: feedback.practice_activity?.instructions || '',
+    hasUrgent:    feedback.urgent?.length > 0 ? 'YES' : 'no',
+  };
+
+  fetch(CONFIG.APPS_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  }).then(() => {
+    document.getElementById('save-status').textContent = '✓ Session saved';
+  }).catch(() => {});
+}
+
+// ════════════════════════════════════════════
+// TEACHER DASHBOARD
+// ════════════════════════════════════════════
+function showTeacherLogin() {
+  document.getElementById('top-bar').style.display = 'none';
+  document.getElementById('teacher-pwd').value = '';
+  showScreen('screen-teacher-login');
+}
+
+function teacherLogin() {
+  const pwd = document.getElementById('teacher-pwd').value;
+  if (pwd !== CONFIG.TEACHER_PASSWORD) return alert('Incorrect password.');
+  showScreen('screen-teacher');
+  loadTeacherData();
+}
+
+async function loadTeacherData() {
+  if (!CONFIG.APPS_SCRIPT_URL || CONFIG.APPS_SCRIPT_URL.includes('REPLACE')) {
+    document.getElementById('teacher-loading').style.display = 'none';
+    document.getElementById('table-wrap').style.display = 'block';
+    state.allSessions = [];
+    renderTable();
+    document.getElementById('teacher-stats').innerHTML =
+      '<div style="color:var(--gray-400);font-size:0.88rem;padding:8px">Configure APPS_SCRIPT_URL to load sessions.</div>';
+    return;
+  }
+
+  document.getElementById('teacher-loading').style.display = 'block';
+  document.getElementById('table-wrap').style.display = 'none';
+
+  try {
+    const url = `${CONFIG.APPS_SCRIPT_URL}?password=${encodeURIComponent(CONFIG.TEACHER_PASSWORD)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    state.allSessions = data.sessions || [];
+    renderStats();
+    renderTable();
+    document.getElementById('teacher-loading').style.display = 'none';
+    document.getElementById('table-wrap').style.display = 'block';
+  } catch (e) {
+    document.getElementById('teacher-loading').style.display = 'none';
+    document.getElementById('table-wrap').style.display = 'block';
+    alert('Could not load sessions: ' + e.message);
+  }
+}
+
+function renderStats() {
+  const sessions = state.allSessions;
+  const courses = [...new Set(sessions.map(s => s.course))];
+  const urgentCount = sessions.filter(s => s.hasUrgent === 'YES').length;
+  const students = [...new Set(sessions.map(s => s.name))];
+
+  document.getElementById('teacher-stats').innerHTML = `
+    <div class="stat-box"><div class="stat-number">${sessions.length}</div><div class="stat-label">Total sessions</div></div>
+    <div class="stat-box"><div class="stat-number">${students.length}</div><div class="stat-label">Students</div></div>
+    <div class="stat-box"><div class="stat-number">${courses.length}</div><div class="stat-label">Courses active</div></div>
+    <div class="stat-box" style="border-color:#fca5a5"><div class="stat-number" style="color:var(--red)">${urgentCount}</div><div class="stat-label">With urgent items</div></div>`;
+}
+
+function renderTable() {
+  let sessions = [...state.allSessions];
+  const courseFilter = document.getElementById('filter-course')?.value;
+  const urgentFilter = document.getElementById('filter-urgent')?.value;
+  const nameFilter   = document.getElementById('filter-name')?.value.toLowerCase();
+
+  if (courseFilter) sessions = sessions.filter(s => s.course === courseFilter);
+  if (urgentFilter === 'urgent') sessions = sessions.filter(s => s.hasUrgent === 'YES');
+  if (nameFilter) sessions = sessions.filter(s => s.name.toLowerCase().includes(nameFilter));
+
+  const tbody = document.getElementById('teacher-tbody');
+  const noSessions = document.getElementById('no-sessions');
+
+  if (!sessions.length) {
+    tbody.innerHTML = '';
+    noSessions.style.display = 'block';
+    return;
+  }
+  noSessions.style.display = 'none';
+
+  tbody.innerHTML = sessions.map((s, i) => {
+    const dt = s.timestamp ? new Date(s.timestamp).toLocaleString('es-CL', { dateStyle: 'short', timeStyle: 'short' }) : '—';
+    const urgentBadge = s.hasUrgent === 'YES' ? '<span class="feedback-pill pill-red">🚨 urgent</span>' : '';
+    const needsBadge  = s.needsWork ? '<span class="feedback-pill pill-yellow">⚠ needs work</span>' : '';
+    const okBadge     = s.strengths ? '<span class="feedback-pill pill-green">✅ strengths noted</span>' : '';
+    return `
+      <tr>
+        <td style="white-space:nowrap;font-size:0.82rem;color:var(--gray-500)">${dt}</td>
+        <td class="td-name">${escHtml(s.name)}</td>
+        <td><span class="td-course">${escHtml(s.course)}</span></td>
+        <td style="font-size:0.85rem;color:var(--gray-600)">${escHtml(s.activityName || '')}</td>
+        <td class="td-text">
+          <div class="text-clamp" id="text-${i}" onclick="toggleExpand('text-${i}','expand-${i}')">${escHtml(s.studentText || '')}</div>
+          <div class="expand-btn" id="expand-${i}" onclick="toggleExpand('text-${i}','expand-${i}')">Show more ▼</div>
+        </td>
+        <td>
+          ${okBadge}${needsBadge}${urgentBadge}
+          ${s.urgent ? `<div style="font-size:0.8rem;color:var(--red);margin-top:4px">${escHtml(s.urgent)}</div>` : ''}
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+function toggleExpand(textId, btnId) {
+  const el = document.getElementById(textId);
+  const btn = document.getElementById(btnId);
+  el.classList.toggle('expanded');
+  btn.textContent = el.classList.contains('expanded') ? 'Show less ▲' : 'Show more ▼';
+}
+
+function escHtml(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
